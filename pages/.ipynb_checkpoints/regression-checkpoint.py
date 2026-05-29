@@ -24,7 +24,6 @@ df = pd.read_csv("./cleaned_kayla_survey_data.csv")
 df = df.drop(columns=["Timestamp"])
 df_orig = df_orig.drop(columns=["Timestamp"])
 df["Sleep_Next_Night"] = df["Sleep_Hours"].shift(-1)
-df["Next_Morning_Back_Pain"] = df["Morning_Back_Pain"].shift(-1)
 df_orig = df_orig.rename(columns={
     "Survery_Date": "Survey_Date"
 })
@@ -85,9 +84,7 @@ target = st.selectbox(
         "Sleep_Hours",
         "Prac_Energy_Level",
         "Mood_Number",
-        "Meals_Quality",
-        "Sleep_Next_Night",
-        "Next_Morning_Back_Pain"
+        "Meals_Quality"
     ]
 )
 
@@ -120,17 +117,7 @@ possible_features = [
     "Tired",
     "focused",
     "sore",
-    "strong",
-    "sleep_lag1",
-    "sleep_3day_avg",
-    "Sleep_Next_Night",
-    "right_shin",
-    "left_shin",
-    "knee",
-    "lower_back",
-    "left_foot",
-    "tight_hips",
-    "traps"
+    "strong"
 ]
 
 # Remove target from predictors
@@ -168,7 +155,7 @@ if len(features) > 0:
     # -----------------------------
     st.header("Regression Results")
 
-    st.write(f"Days of data: {len(reg_df)}")
+    st.write(f"Number of observations: {len(reg_df)}")
 
     st.write("### R-squared")
     st.write(round(model.rsquared, 3))
@@ -179,8 +166,8 @@ if len(features) > 0:
     st.write("### P-values")
     st.dataframe(model.pvalues)
 
-    # st.write("### Full Summary")
-    # st.text(model.summary())
+    st.write("### Full Summary")
+    st.text(model.summary())
 
     # -----------------------------
     # ACTUAL VS PREDICTED
