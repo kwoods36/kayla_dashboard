@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import plotly.express as px
 import statsmodels.api as sm
+from data_loader import load_data
 
 st.title("Regression Exploration")
 
@@ -18,6 +19,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+df, df_orig = load_data()
 
 df_orig = pd.read_csv('./Kayla_Daily_Survey.csv')
 df = pd.read_csv("./cleaned_kayla_survey_data.csv")
