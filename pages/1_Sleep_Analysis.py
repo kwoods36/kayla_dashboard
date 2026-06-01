@@ -6,6 +6,7 @@ import streamlit as st
 import plotly.express as px
 
 from data_loader import load_data
+from constants import display_names
 
 
 st.title("Sleep Analysis")
@@ -21,6 +22,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 df, df_orig = load_data()
+DISPLAY_NAMES = display_names()
+REVERSE_DISPLAY_NAMES = {
+    v: k for k, v in DISPLAY_NAMES.items()
+}
+
+
 tab2, tab3, tab4, tab5 = st.tabs([
     "Sleep Trends",
     "Sleep Relationships",

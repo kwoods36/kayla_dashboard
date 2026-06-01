@@ -4,7 +4,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
 import plotly.express as px
+
 from data_loader import load_data
+from constants import display_names
 
 st.title("Kayla's Dashboard")
 
@@ -19,6 +21,10 @@ st.markdown(
     unsafe_allow_html=True
 )
 df, df_orig = load_data()
+DISPLAY_NAMES = display_names()
+REVERSE_DISPLAY_NAMES = {
+    v: k for k, v in DISPLAY_NAMES.items()
+}
 
 tab1,tab2 = st.tabs([
     "Overview",
@@ -29,6 +35,9 @@ tab1,tab2 = st.tabs([
 # TAB 1: OVERVIEW
 # ----------------------
 with tab1:
+    days = len(df)
+    st.subheader(f"{days} days of Survey Data")
+    
     st.subheader("Survey Answers last 7 days")
     st.write(df_orig.tail(7))
     st.subheader("Last 7 Days")

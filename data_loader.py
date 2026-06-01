@@ -92,7 +92,9 @@ def load_data():
     df = pd.concat([df, prac_dummies], axis=1)
     df = df.drop(columns=["Prac_Feel"])
     
-
+    # ----------------------------
+    # Adding lags and rolling averages
+    # ----------------------------
     df["sleep_lag1"] = df["Sleep_Hours"].shift(1)
     df["sleep_lag2"] = df["Sleep_Hours"].shift(2)
     df["Sleep_Next_Night"] = df["Sleep_Hours"].shift(-1)
@@ -100,7 +102,16 @@ def load_data():
     df["sleep_3day_avg"] = df["Sleep_Hours"].rolling(3).mean()
     df["sleep_5day_avg"] = df["Sleep_Hours"].rolling(5).mean()
 
+    df["Prac_energy_next_day"] = df["Prac_Energy_Level"].shift(-1)
+    
+    df["Chicken_lag"] = df["Chicken"].shift(1)
+    df["Beef_lag"] = df["Beef"].shift(1)
+    df["Salmon_lag"] = df["Salmon"].shift(1)
+    df["Pork_lag"] = df["Pork"].shift(1)
+    df["Other_lag"] = df["Other"].shift(1)
+
     # ----------------------------
+    # Cycle Phases
     # 1. Period flag
     # ----------------------------
     df["is_period"] = df["Period_day"] == 1
