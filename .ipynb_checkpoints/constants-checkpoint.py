@@ -15,6 +15,8 @@ def display_names():
     "Meals_Quality": "Nutrition Quality",
     "Prac_Energy_Level": "Practice Energy",
     "Prac_energy_next_day": "Next Day Practice Energy",
+    "Prac_Feel": "Practice Feeling Description",
+    "Mood_Descript": "Mood Description",
     
     # Context
     "Comp_day": "Competition Day",
@@ -23,6 +25,7 @@ def display_names():
     "Alcoholic_Drinks": "Alcoholic Drinks",
     
     # Workout types
+    "Workout_Type":"Workout Type",
     "Active Recovery": "Active Recovery Workout",
     "Comp": "Competition",
     "Jump": "Jump Session",
@@ -35,6 +38,7 @@ def display_names():
     "LJ_Comp": "Long Jump Competition",
     
     # Recovery activities
+    "RR_Act": "Relax/Recovery Activity",
     "boots": "Recovery Boots",
     "journaled": "Journaling",
     "pressure_tension_release": "Pressure/Tension Release",

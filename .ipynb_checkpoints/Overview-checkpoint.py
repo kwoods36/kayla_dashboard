@@ -38,9 +38,10 @@ tab1,tab2, tab3 = st.tabs([
 with tab1:
     days = len(df)
     st.subheader(f"{days} days of Survey Data")
+    df_orig_renamed = df_orig.rename(columns=DISPLAY_NAMES)
     
     st.subheader("Survey Answers last 7 days")
-    st.write(df_orig.tail(7))
+    st.write(df_orig_renamed.tail(7))
     st.subheader("Last 7 Days")
     st.metric("Average Hours of Sleep", df["Sleep_Hours"].tail(7).mean().round(2))
     st.metric("Average Energy (/5)", df["Prac_Energy_Level"].tail(7).mean())
@@ -58,11 +59,6 @@ with tab1:
 
 with tab2:
     st.subheader("In Progress")
-    url ="https://docs.google.com/spreadsheets/d/1iXGYKpSNqwDI99m1zxIbrgD9TQcaNZufkqdGFrnkC6s/export?format=csv"
-    df_new = pd.read_csv(url)
-    df_new["What date is this survey for?"] = pd.to_datetime(df_new["What date is this survey for?"]).dt.date
-    df_new = df_new.sort_values(["What date is this survey for?"])
-    st.write(df_new.tail(7))
     
     
 with tab3:

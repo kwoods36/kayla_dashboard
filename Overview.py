@@ -38,9 +38,10 @@ tab1,tab2, tab3 = st.tabs([
 with tab1:
     days = len(df)
     st.subheader(f"{days} days of Survey Data")
+    df_orig_renamed = df_orig.rename(columns=DISPLAY_NAMES)
     
     st.subheader("Survey Answers last 7 days")
-    st.write(df_orig.tail(7))
+    st.write(df_orig_renamed.tail(7))
     st.subheader("Last 7 Days")
     st.metric("Average Hours of Sleep", df["Sleep_Hours"].tail(7).mean().round(2))
     st.metric("Average Energy (/5)", df["Prac_Energy_Level"].tail(7).mean())
