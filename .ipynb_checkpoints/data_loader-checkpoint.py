@@ -3,16 +3,13 @@ import streamlit as st
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv('Kayla_Daily_Survey.csv')
+    #df = pd.read_csv('Kayla_Daily_Survey.csv')
+    url ="https://docs.google.com/spreadsheets/d/1iXGYKpSNqwDI99m1zxIbrgD9TQcaNZufkqdGFrnkC6s/export?format=csv"
+    df = pd.read_csv(url)
     df = df.drop(columns=["Timestamp"])
     
-
-    df = df.rename(columns={
-    "Survery_Date": "Survey_Date"
-    })
-        # survey date to datetime
     
-    df["Survey_Date"] = pd.to_datetime(df["Survey_Date"])
+    df["Survey_Date"] = pd.to_datetime(df["Survey_Date"]).dt.date
     df = df.sort_values(["Survey_Date"])
 
     df_orig=df.copy()

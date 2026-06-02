@@ -26,9 +26,10 @@ REVERSE_DISPLAY_NAMES = {
     v: k for k, v in DISPLAY_NAMES.items()
 }
 
-tab1,tab2 = st.tabs([
+tab1,tab2, tab3 = st.tabs([
     "Overview",
-    "Daily Something"
+    "Coming Soon: Daily Readiness Score",
+    "Coming Soon: Current Cylce Phase"
 ])
 
 # ----------------------
@@ -54,6 +55,15 @@ with tab1:
     st.subheader("Total Pain Frequency")
     
     st.bar_chart(pain_sums)
-    
+
 with tab2:
-    st.subheader("Something Here")
+    st.subheader("In Progress")
+    url ="https://docs.google.com/spreadsheets/d/1iXGYKpSNqwDI99m1zxIbrgD9TQcaNZufkqdGFrnkC6s/export?format=csv"
+    df_new = pd.read_csv(url)
+    df_new["What date is this survey for?"] = pd.to_datetime(df_new["What date is this survey for?"]).dt.date
+    df_new = df_new.sort_values(["What date is this survey for?"])
+    st.write(df_new.tail(7))
+    
+    
+with tab3:
+    st.subheader("In Progress")

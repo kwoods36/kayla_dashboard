@@ -26,9 +26,10 @@ REVERSE_DISPLAY_NAMES = {
     v: k for k, v in DISPLAY_NAMES.items()
 }
 
-tab1,tab2 = st.tabs([
+tab1,tab2, tab3 = st.tabs([
     "Overview",
-    "Daily Something"
+    "Coming Soon: Daily Readiness Score",
+    "Coming Soon: Current Cylce Phase"
 ])
 
 # ----------------------
@@ -54,6 +55,10 @@ with tab1:
     st.subheader("Total Pain Frequency")
     
     st.bar_chart(pain_sums)
-    
+
 with tab2:
-    st.subheader("Something Here")
+    st.subheader("In Progress")
+    
+    
+with tab3:
+    st.subheader("In Progress")

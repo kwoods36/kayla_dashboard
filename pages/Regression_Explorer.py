@@ -196,7 +196,7 @@ with tab1:
         st.write(f"Days of data: {len(reg_df)}")
     
         st.write("### R-squared")
-        st.write("This tells you how much of the variation in the outcome is explained by the predictors. Higher values (close to 1) mean the predictors explain more of what affects the outcome, but it does not guarantee prediction accuracy.")
+        st.write("This tells you how much of the variation in the outcome is explained by the predictors. Higher values (typically between 0.1 and 0.3) mean the predictors explain more of what affects the outcome, but it does not guarantee prediction accuracy.")
         st.write(round(model.rsquared, 3))
 
         st.write("### Coefficients")
