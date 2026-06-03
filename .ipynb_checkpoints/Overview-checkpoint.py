@@ -41,7 +41,7 @@ with tab1:
     df_orig_renamed = df_orig.rename(columns=DISPLAY_NAMES)
     
     st.subheader("Survey Answers last 7 days")
-    st.write(df_orig_renamed.tail(7))
+    st.write(df_orig_renamed.tail(7)[::-1])
     st.subheader("Last 7 Days")
     st.metric("Average Hours of Sleep", df["Sleep_Hours"].tail(7).mean().round(2))
     st.metric("Average Energy (/5)", df["Prac_Energy_Level"].tail(7).mean())
@@ -51,7 +51,7 @@ with tab1:
     "left_foot", "tight_hips", "traps"
     ]
     
-    pain_sums = df[pain_cols].sum().sort_values(ascending=False)
+    pain_sums = df[pain_cols].tail(7).sum().sort_values(ascending=False)
     
     st.subheader("Total Pain Frequency")
     

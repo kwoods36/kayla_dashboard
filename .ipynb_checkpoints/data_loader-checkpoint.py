@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-@st.cache_data
+@st.cache_data(ttl=300)
 def load_data():
     #df = pd.read_csv('Kayla_Daily_Survey.csv')
     url ="https://docs.google.com/spreadsheets/d/1iXGYKpSNqwDI99m1zxIbrgD9TQcaNZufkqdGFrnkC6s/export?format=csv"
