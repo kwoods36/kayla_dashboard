@@ -6,6 +6,7 @@ import streamlit as st
 import plotly.express as px
 
 from data_loader import load_data
+from constants import display_names
 
 
 st.title("Sleep Analysis")
@@ -21,6 +22,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 df, df_orig = load_data()
+DISPLAY_NAMES = display_names()
+REVERSE_DISPLAY_NAMES = {
+    v: k for k, v in DISPLAY_NAMES.items()
+}
+
+
 tab2, tab3, tab4, tab5 = st.tabs([
     "Sleep Trends",
     "Sleep Relationships",
@@ -45,26 +52,26 @@ with tab2:
         y="Sleep_Hours",
         title="Sleep Over Time"
     )
-    #st.line_chart(df.set_index("Survey_Date")["Sleep_Hours"])
-    st.plotly_chart(fig, use_container_width=True)
+    st.line_chart(df.set_index("Survey_Date")["Sleep_Hours"])
+    # st.plotly_chart(fig, use_container_width=True)
 
-    st.subheader("Sleep Trend Explorer")
+    # st.subheader("Sleep Trend Explorer")
 
-    travel_filter = st.checkbox("Include Travel Days", value=True)
-    comp_filter = st.checkbox("Include Competition Days", value=True)
+    # travel_filter = st.checkbox("Include Travel Days", value=True)
+    # comp_filter = st.checkbox("Include Competition Days", value=True)
     
-    filtered_df = df.copy()
+    # filtered_df = df.copy()
     
-    if not travel_filter:
-        filtered_df = filtered_df[filtered_df["Travel_day"] == 0]
+    # if not travel_filter:
+    #     filtered_df = filtered_df[filtered_df["Travel_day"] == 0]
     
-    if not comp_filter:
-        filtered_df = filtered_df[filtered_df["Comp_day"] == 0]
+    # if not comp_filter:
+    #     filtered_df = filtered_df[filtered_df["Comp_day"] == 0]
     
-    fig, ax = plt.subplots()
-    sns.lineplot(data=filtered_df, x="Survey_Date", y="Sleep_Hours", ax=ax)
+    # fig, ax = plt.subplots()
+    # sns.lineplot(data=filtered_df, x="Survey_Date", y="Sleep_Hours", ax=ax)
     
-    st.pyplot(fig)
+    # st.pyplot(fig)
 
 with tab3:
     # Sleep vs Practice Energy

@@ -26,10 +26,9 @@ REVERSE_DISPLAY_NAMES = {
     v: k for k, v in DISPLAY_NAMES.items()
 }
 
-tab1,tab2, tab3 = st.tabs([
+tab1,tab3 = st.tabs([
     "Overview",
-    "Coming Soon: Daily Readiness Score",
-    "Coming Soon: Current Cylce Phase"
+    "Current Cylce Phase"
 ])
 
 # ----------------------
@@ -57,9 +56,95 @@ with tab1:
     
     st.bar_chart(pain_sums)
 
-with tab2:
-    st.subheader("In Progress")
+# ----------------------
+# TAB 2
+# ----------------------
+
     
-    
+# ----------------------
+# TAB 3
+# ----------------------   
 with tab3:
-    st.subheader("In Progress")
+    # Dates of observed period starts
+    period_starts = df.loc[df["period_start"], "Survey_Date"]
+    
+    # ----------------------------------------------------
+    # Estimate average cycle length
+    # ----------------------------------------------------
+    
+    cycle_lengths = period_starts.diff().dt.days.dropna()
+    
+    # Ignore implausible gaps (likely missing surveys)
+    cycle_lengths = cycle_lengths[
+        cycle_lengths.between(20, 40)
+    ]
+    
+    if len(cycle_lengths) > 0:
+        avg_cycle_length = round(cycle_lengths.mean())
+    else:
+        avg_cycle_length = 28
+    
+    st.subheader(f"Estimated cycle length: {avg_cycle_length} days")
+    current_phase = df["cycle_phase"].iloc[-1]
+
+    st.subheader(f"Current Cycle Phase - {current_phase}")
+    #st.write(current_phase)
+
+    phase_info = {
+
+    "Early Menstrual":
+        """
+        • Energy may be lower than usual.
+        • Prioritize sleep, hydration, and iron-rich foods.
+        • Light movement may feel better than high-intensity training.
+        """,
+
+    "Late Menstrual":
+        """
+        • Energy often begins to improve.
+        • Many athletes start feeling stronger again.
+        • This can be a good time to gradually increase training intensity.
+        """,
+
+    "Early Follicular":
+        """
+        • Energy and motivation are often increasing.
+        • Recovery may feel easier.
+        • Strength and power training may feel more comfortable.
+        """,
+
+    "Late Follicular":
+        """
+        • Many women report peak energy and confidence.
+        • High-intensity workouts may feel especially good.
+        • Continue fueling well to support training.
+        """,
+
+    "Ovulatory":
+        """
+        • Power and explosiveness may be near their highest.
+        • Some athletes notice increased confidence and coordination.
+        • Be mindful of proper warm-ups, as some research suggests injury risk may increase around ovulation.
+        """,
+
+    "Early Luteal":
+        """
+        • Energy often remains fairly stable.
+        • Appetite may begin to increase.
+        • Continue prioritizing carbohydrates and hydration around training.
+        """,
+
+    "Late Luteal":
+        """
+        • Fatigue, bloating, or soreness may become more noticeable.
+        • Prioritize sleep and recovery.
+        • Don't be discouraged if workouts feel more difficult than usual.
+        """
+    }
+
+    st.subheader("What to Expect")
+
+    st.info(phase_info.get(current_phase, "No information available."))
+    
+
+    

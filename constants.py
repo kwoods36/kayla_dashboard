@@ -54,11 +54,11 @@ def display_names():
     "Pork": "Ate Pork",
     "Salmon": "Ate Salmon",
     "Other": "Ate Other Protein Source",
-    "Beef_lag": "Ate Beef Night Prior",
-    "Chicken_lag": "Ate Chicken Night Prior",
-    "Pork_lag": "Ate Pork Night Prior",
-    "Salmon_lag": "Ate Salmon Night Prior",
-    "Other_lag": "Ate Other Protein Source Night Prior",
+    "Beef_lag": "Ate Beef (Previous Day)",
+    "Chicken_lag": "Ate Chicken (Previous Day)",
+    "Pork_lag": "Ate Pork (Previous Day)",
+    "Salmon_lag": "Ate Salmon (Previous Day)",
+    "Other_lag": "Ate Other Protein Source (Previous Day)",
     
     # Mood tags
     "Anxious": "Felt Anxious",
@@ -102,12 +102,14 @@ def display_names():
     "Sleep_Next_Night": "Next Night Sleep",
     
     # Cycle tracking
-    "is_period": "Currently on Period",
-    "period_start": "Period Start",
-    "cycle_id": "Cycle Number",
-    "cycle_phase": "Cycle Phase",
     "cycle_day_in_period": "Day of Period",
     "cycle_phase_detail": "Detailed Cycle Phase",
+    "is_period": "On Period",
+    "period_start": "First Day of Period",
+    "cycle_id": "Cycle Number",
+    "cycle_day": "Cycle Day",
+    "cycle_phase": "Cycle Phase",
+    "days_until_period": "Days Until Next Period",
 
     
     # Summary metrics

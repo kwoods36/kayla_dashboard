@@ -7,12 +7,14 @@ def load_data():
     url ="https://docs.google.com/spreadsheets/d/1iXGYKpSNqwDI99m1zxIbrgD9TQcaNZufkqdGFrnkC6s/export?format=csv"
     df = pd.read_csv(url)
     df = df.drop(columns=["Timestamp"])
-    
-    
-    df["Survey_Date"] = pd.to_datetime(df["Survey_Date"]).dt.date
-    df = df.sort_values(["Survey_Date"])
 
     df_orig=df.copy()
+    
+    df["Survey_Date"] = pd.to_datetime(df["Survey_Date"])
+    df = df.sort_values(["Survey_Date"])
+
+    df_orig["Survey_Date"] = pd.to_datetime(df_orig["Survey_Date"]).dt.date
+    df_orig = df_orig.sort_values(["Survey_Date"])
     
     # Yes/No Cols
     yes_no_cols = [
@@ -107,58 +109,110 @@ def load_data():
     df["Pork_lag"] = df["Pork"].shift(1)
     df["Other_lag"] = df["Other"].shift(1)
 
-    # ----------------------------
-    # Cycle Phases
-    # 1. Period flag
-    # ----------------------------
+    # ----------------------------------------------------
+    # MENSTRUAL CYCLE FEATURES
+    # ----------------------------------------------------
+    
+    # Ensure sorted by date
+    df = df.sort_values("Survey_Date").reset_index(drop=True)
+    
+    # Binary indicator
     df["is_period"] = df["Period_day"] == 1
     
-    # ----------------------------
-    # 2. Identify period starts
-    # ----------------------------
+    # First day of each period
     df["period_start"] = (
         df["is_period"] &
-        (~df["is_period"].shift(1).fillna(False))
+        ~df["is_period"].shift(fill_value=False)
     )
     
-    # ----------------------------
-    # 3. Assign cycle ID
-    # ----------------------------
+    # Dates of observed period starts
+    period_starts = df.loc[df["period_start"], "Survey_Date"]
+    
+    # ----------------------------------------------------
+    # Estimate average cycle length
+    # ----------------------------------------------------
+    
+    cycle_lengths = period_starts.diff().dt.days.dropna()
+    
+    # Ignore implausible gaps (likely missing surveys)
+    cycle_lengths = cycle_lengths[
+        cycle_lengths.between(20, 40)
+    ]
+    
+    if len(cycle_lengths) > 0:
+        avg_cycle_length = round(cycle_lengths.mean())
+    else:
+        avg_cycle_length = 28
+    
+    print(f"Estimated cycle length: {avg_cycle_length} days")
+    
+    # ----------------------------------------------------
+    # Assign cycle IDs
+    # ----------------------------------------------------
+    
     df["cycle_id"] = df["period_start"].cumsum()
     
-    # ----------------------------
-    # 4. Default everything to non_cycle
-    # ----------------------------
-    df["cycle_phase"] = "non_cycle"
+    # Before the first observed period
+    df.loc[df["cycle_id"] == 0, "cycle_id"] = pd.NA
     
-    # ----------------------------
-    # 5. Assign PRE-PERIOD (3 days before any period start)
-    # ----------------------------
-    period_start_indices = df.index[df["period_start"]].tolist()
+    # ----------------------------------------------------
+    # Cycle day
+    # ----------------------------------------------------
     
-    for idx in period_start_indices:
-        pre_idx = list(range(max(0, idx - 3), idx))
-        df.loc[pre_idx, "cycle_phase"] = "pre_period"
+    df["cycle_day"] = pd.NA
     
-    # ----------------------------
-    # 6. Assign PERIOD days
-    # ----------------------------
-    df.loc[df["is_period"], "cycle_phase"] = "period"
+    for cycle in df["cycle_id"].dropna().unique():
     
-    # ----------------------------
-    # 7. (optional) split period into early/mid/late
-    # ----------------------------
-    df["cycle_day_in_period"] = df.groupby("cycle_id")["is_period"].cumsum()
+        idx = df["cycle_id"] == cycle
     
-    df.loc[df["cycle_phase"] == "period", "cycle_phase_detail"] = (
-        df["cycle_day_in_period"].map(
-            lambda x: "early" if x <= 2 else ("mid" if x <= 5 else "late")
-        )
+        start_date = df.loc[idx, "Survey_Date"].min()
+    
+        df.loc[idx, "cycle_day"] = (
+            df.loc[idx, "Survey_Date"] - start_date
+        ).dt.days + 1
+    
+    df["cycle_day"] = df["cycle_day"].astype("Int64")
+    
+    # ----------------------------------------------------
+    # Estimate cycle phase
+    # ----------------------------------------------------
+
+    def cycle_phase(day, cycle_length):
+    
+        if pd.isna(day):
+            return pd.NA
+
+        # Scale important points based on estimated cycle length
+        ovulation_day = round(cycle_length / 2)
+        late_luteal_start = cycle_length - round(cycle_length * 0.15)
+    
+        # Menstrual
+        if day <= 2:
+            return "Early Menstrual"
+    
+        elif day <= 5:
+            return "Late Menstrual"
+    
+        # Follicular
+        elif day <= ovulation_day - 4:
+            return "Early Follicular"
+    
+        elif day <= ovulation_day - 1:
+            return "Late Follicular"
+    
+        # Ovulation
+        elif day <= ovulation_day + 1:
+            return "Ovulatory"
+    
+        # Luteal
+        elif day <= late_luteal_start:
+            return "Early Luteal"
+    
+        else:
+            return "Late Luteal"
+    
+    df["cycle_phase"] = df["cycle_day"].apply(
+        lambda x: cycle_phase(x, avg_cycle_length)
     )
-    
-    # ----------------------------
-    # 8. Fill missing detail labels
-    # ----------------------------
-    df["cycle_phase_detail"] = df["cycle_phase_detail"].fillna(df["cycle_phase"])
 
     return df, df_orig
